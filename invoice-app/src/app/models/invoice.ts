@@ -8,4 +8,5 @@ export class Invoice {
     client!: Client;
     company!: Company;
     items!: InvoiceItem[];
+    total!: number;
 }

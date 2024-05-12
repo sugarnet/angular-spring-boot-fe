@@ -1,52 +1,29 @@
 <div class="container">
-  <div>
-    <h2>Invoice Example</h2>
-    <div>
-      <ul>
-        <li>Id: {{ invoice.id }}</li>
-        <li>Name: {{ invoice.name }}</li>
-      </ul>
+  <div class="card my-3">
+    <div class="card-header">
+      <h2>Invoice Example</h2>
     </div>
+    <div class="card-body">
+      <app-invoice-view
+        [id]="invoice.id"
+        [name]="invoice.name"
+      ></app-invoice-view>
 
-    <div>
-        <h3>Client Data</h3>
-        <ul>
-            <li>{{ invoice.client.name }} {{ invoice.client.lastname }}</li>
-            <li>{{ invoice.client.address.country }} / {{ invoice.client.address.city }}</li>
-            <li>{{ invoice.client.address.street }} {{ invoice.client.address.number }}</li>
-        </ul>
-    </div>
+      <div class="row my-3">
+        <div class="col">
+          <app-client-view [client]="invoice.client" />
+        </div>
 
-    <div>
-        <h3>Company Data</h3>
-        <ul>
-            <li>{{ invoice.company.name }}</li>
-            <li>{{ invoice.company.fiscalNumber }}</li>
-        </ul>
-    </div>
+        <div class="col">
+          <app-company-view [company]="invoice.company" />
+        </div>
+      </div>
 
-    <div>
-        <h4>Invoice Details</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (item of invoice.items; track $index) {                    
-                    <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.product }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.quantity }}</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+      <app-detail-view [items]="invoice.items" (removeEventEmitter)="remove($event)" />
+
+      <app-total-view [total]="invoice.total" />
+
+      <app-form-item-view />
     </div>
   </div>
 </div>
