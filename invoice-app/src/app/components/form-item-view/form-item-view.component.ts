@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { InvoiceItem } from '../../models/invoice-item';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-form-item-view',
@@ -16,5 +15,22 @@ export class FormItemViewComponent {
     product: '',
     price: '',
     quantity: ''
+  }
+
+  addItem(formItem: NgForm): void {
+
+    if (formItem.valid) {
+      this.addItemEventEmitter.emit({id: this.counterId, ...this.item});
+      this.counterId++;
+  
+      this.item = {
+        product: '',
+        price: '',
+        quantity: ''
+      };
+    }
+
+    formItem.reset();
+    formItem.resetForm();
   }
 }

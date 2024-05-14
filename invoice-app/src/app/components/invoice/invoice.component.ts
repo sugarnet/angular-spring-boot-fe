@@ -7,6 +7,7 @@ import { DetailViewComponent } from '../detail-view/detail-view.component';
 import { InvoiceViewComponent } from '../invoice-view/invoice-view.component';
 import { TotalViewComponent } from '../total-view/total-view.component';
 import { FormItemViewComponent } from '../form-item-view/form-item-view.component';
+import { InvoiceItem } from '../../models/invoice-item';
 
 @Component({
   selector: 'app-invoice',
@@ -32,5 +33,9 @@ export class InvoiceComponent implements OnInit {
 
   remove(id: number): void {
     this.invoice = this.invoiceService.remove(id);
+  }
+
+  addItem(item: InvoiceItem): void {
+    this.invoice = this.invoiceService.addItem(item);
   }
 }

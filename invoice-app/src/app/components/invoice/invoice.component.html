@@ -23,7 +23,7 @@
 
       <app-total-view [total]="invoice.total" />
 
-      <app-form-item-view />
+      <app-form-item-view (addItemEventEmitter)="addItem($event)" />
     </div>
   </div>
 </div>

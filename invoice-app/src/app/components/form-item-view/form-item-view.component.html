@@ -1,7 +1,69 @@
-<form class="w-50">
-    <input name="product" placeholder="Product" class="form-control m-3" [(ngModel)]="item.product">
-    <input name="price" placeholder="Price" class="form-control m-3" [(ngModel)]="item.price">
-    <input name="quantity" placeholder="Quantity" class="form-control m-3" [(ngModel)]="item.quantity">
+<form class="w-50" (ngSubmit)="addItem(formItem)" #formItem="ngForm">
+    <input name="product"
+    type="text"
+    placeholder="Product" 
+    class="form-control m-3" 
+    [(ngModel)]="item.product"
+    required minlength="3"
+    #product="ngModel">
 
-    <button class="btn btn-primary m-3">add</button>
+    @if (product.invalid && (product.dirty || product.touched)) {
+        @if (product.errors!['required']) {
+            <div class="text-danger mx-3">
+                Product is required
+            </div>
+        }
+        @if (product.errors!['minlength']) {
+            <div class="text-danger mx-3">
+                Min 3 characters
+            </div>
+        }
+    }
+    
+    <input name="price"
+    type="number"
+    step="any"
+    placeholder="Price" 
+    class="form-control m-3" 
+    [(ngModel)]="item.price"
+    required min="0"
+    #price="ngModel">
+
+    @if (price.invalid && (price.dirty || price.touched)) {
+        @if (price.errors!['required']) {
+            <div class="text-danger mx-3">
+                Price is required
+            </div>
+        }
+        @if (price.errors!['min']) {
+            <div class="text-danger mx-3">
+                Min is 0
+            </div>
+        }
+    }
+    
+    <input name="quantity"
+    type="number"
+    placeholder="Quantity" 
+    class="form-control m-3" 
+    [(ngModel)]="item.quantity"
+    required min="1"
+    #quantity="ngModel">
+
+    @if (quantity.invalid && (quantity.dirty || quantity.touched)) {
+        @if (quantity.errors!['required']) {
+            <div class="text-danger mx-3">
+                Quantity is required
+            </div>
+        }
+        @if (quantity.errors!['min']) {
+            <div class="text-danger mx-3">
+                Min is 1
+            </div>
+        }
+    }
+
+    <button class="btn btn-primary m-3" [disabled]="formItem.invalid">
+        add item
+    </button>
 </form>
