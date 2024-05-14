@@ -1,0 +1,16 @@
+<h2>Products Cart</h2>
+
+<div class="row">
+    @for (product of products; track $index) {
+        <div class="col-4 my-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <p class="card-text">{{ product.price }}</p>
+                    <button class="btn btn-primary" (click)="addToCart(product.id)">Add to cart</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
