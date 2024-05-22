@@ -1,0 +1,5 @@
+<div class="row">
+    @for (product of products; track $index) {
+    <div app-product-card [product]="product" (productEventEmitter)="addToCart($event)" class="col-4 my-2"></div>
+    }
+</div>
