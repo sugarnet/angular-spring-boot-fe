@@ -1,9 +1,30 @@
-<h2>Product Catalog App</h2>
+<app-navbar [items]="items" (openCartEventEmitter)="openCart()" />
 
-<app-catalog [products]="products" (productEventEmitter)="addToCart($event)" />
+<div class="container my-3">
+  <h2>Product Catalog App</h2>
+  <div class="row">
+    <div [className]="showCart ? 'col-9' : 'col'">
+      <app-catalog
+        [products]="products"
+        (productEventEmitter)="addToCart($event)"
+      />
+    </div>
 
-@if (items.length > 0) {
-    <app-cart-panel [items]="items" (idProductEventEmitter)="removeFromCart($event)" />
-} @else {
-    <div class="alert alert-warning">Your cart is empty</div>
-}
+    @if (showCart) {
+    <div class="col-3">
+      <button class="btn btn-secondary btn-sm float-end" (click)="openCart()">
+        X
+      </button>
+      @if (items.length > 0) {
+      <app-cart-panel
+        [items]="items"
+        [total]="total"
+        (idProductEventEmitter)="removeFromCart($event)"
+      />
+      } @else {
+      <div class="alert alert-warning">Your cart is empty</div>
+      }
+    </div>
+    }
+  </div>
+</div>

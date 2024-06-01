@@ -4,11 +4,12 @@ import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CartPanelComponent } from './cart-panel/cart-panel.component';
 import { CartItem } from '../models/cart-item';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @Component({
   selector: 'app-cart-app',
   standalone: true,
-  imports: [CatalogComponent, CartPanelComponent],
+  imports: [CatalogComponent, CartPanelComponent, NavbarComponent],
   templateUrl: './cart-app.component.html'
 })
 export class CartAppComponent implements OnInit {
@@ -16,11 +17,14 @@ export class CartAppComponent implements OnInit {
   products: Product[] = [];
   items: CartItem[] = [];
   total: number = 0;
+  showCart: boolean = false;
 
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
     this.products = this.productService.findAll();
+    this.items = JSON.parse(sessionStorage.getItem("cart") || '[]');
+    this.calculateTotal();
   }
 
   addToCart(product: Product): void {
@@ -38,11 +42,26 @@ export class CartAppComponent implements OnInit {
     } else {
       this.items = [...this.items, { product: {...product}, quantity: 1 }];
     }
-
+    this.calculateTotal();
+    this.saveSession();
   }
 
   removeFromCart(idProduct: number): void {
     this.items = this.items.filter(item => item.product.id !== idProduct);
+    this.calculateTotal();
+    this.saveSession();
+  }
+
+  calculateTotal() {
+    this.total = this.items.reduce((accumulator, item) => accumulator + item.product.price * item.quantity, 0);
+  }
+
+  saveSession() {
+    sessionStorage.setItem("cart", JSON.stringify(this.items));
+  }
+
+  openCart(): void {
+    this.showCart = !this.showCart;
   }
 
 }
