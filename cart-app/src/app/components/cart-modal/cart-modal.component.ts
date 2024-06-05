@@ -11,7 +11,7 @@ import { CartItem } from '../../models/cart-item';
 export class CartModalComponent {
 
   @Input() items: CartItem[] = [];
-  @Input() total: number = 0;
+  // @Input() total: number = 0;
 
   @Output() closeCartEventEmitter = new EventEmitter();
   @Output() removeFromCartEventEmitter = new EventEmitter();

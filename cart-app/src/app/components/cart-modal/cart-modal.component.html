@@ -16,7 +16,7 @@
           </div>
           <div class="modal-body">
             @if (items.length > 0) {
-              <app-cart-panel [items]="items" [total]="total" (idProductEventEmitter)="removeFromCart($event)" />
+              <app-cart-panel [items]="items" (idProductEventEmitter)="removeFromCart($event)" />
             } @else {
               <div class="alert alert-warning">Your cart is empty</div>
             } 

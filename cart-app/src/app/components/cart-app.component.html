@@ -6,7 +6,7 @@
 
   @if (showCart) {
 
-    <app-cart-modal [items]="items" [total]="total" (closeCartEventEmitter)="openCloseCart()" (removeFromCartEventEmitter)="removeFromCart($event)"></app-cart-modal>
+    <app-cart-modal [items]="items" (closeCartEventEmitter)="openCloseCart()" (removeFromCartEventEmitter)="removeFromCart($event)"></app-cart-modal>
 
   }
 </div>
