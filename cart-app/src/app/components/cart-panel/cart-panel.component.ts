@@ -1,5 +1,6 @@
 import { Component, EventEmitter, SimpleChanges } from '@angular/core';
 import { CartItem } from '../../models/cart-item';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart-panel',
@@ -14,8 +15,10 @@ export class CartPanelComponent {
 
   idProductEventEmitter: EventEmitter<number> = new EventEmitter();
 
-  ngOnChanges(changes: SimpleChanges): void {
+  constructor(private router: Router) {
 
+    this.items = this.router.getCurrentNavigation()?.extras.state!['items'];
+    this.total = this.router.getCurrentNavigation()?.extras.state!['total'];
   }
 
   removeFromCart(idProduct: number) {
