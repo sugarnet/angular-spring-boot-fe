@@ -5,6 +5,8 @@ import { SharingDataService } from '../services/sharing-data.service';
 import { CatalogComponent } from './catalog/catalog.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
+import Swal from 'sweetalert2'
+
 @Component({
   selector: 'app-cart-app',
   standalone: true,
@@ -48,6 +50,11 @@ export class CartAppComponent implements OnInit {
       this.router.navigate(['/cart'], {
         state: {items: this.items, total: this.total}
       });
+      Swal.fire({
+        title: "Cart Item",
+        text: "Cart Item Added!",
+        icon: "success"
+      });
     });
   }
 
@@ -55,18 +62,35 @@ export class CartAppComponent implements OnInit {
 
     this.sharingDataService.idProductEventEmitter.subscribe(id => {
 
-      console.log('removeFromCart' + id);
-      this.items = this.items.filter(item => item.product.id !== id);
-  
-      if (this.items.length == 0) {
-        sessionStorage.removeItem('cart');
-      }
-      this.calculateTotal();
-      this.saveSession();
-      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-        this.router.navigate(['/cart'], {
-          state: {items: this.items, total: this.total}
-        });
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, remove it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log('removeFromCart' + id);
+          this.items = this.items.filter(item => item.product.id !== id);
+          
+          if (this.items.length == 0) {
+            sessionStorage.removeItem('cart');
+          }
+          this.calculateTotal();
+          this.saveSession();
+          this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['/cart'], {
+              state: {items: this.items, total: this.total}
+            });
+          });
+          Swal.fire({
+            title: "Removed!",
+            text: "Your item has been removed.",
+            icon: "success"
+          });
+        }
       });
     });
   }
