@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../services/product.service';
-import { Product } from '../models/product';
-import { CatalogComponent } from './catalog/catalog.component';
+import { Router, RouterOutlet } from '@angular/router';
 import { CartItem } from '../models/cart-item';
+import { SharingDataService } from '../services/sharing-data.service';
+import { CatalogComponent } from './catalog/catalog.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-cart-app',
@@ -14,45 +13,62 @@ import { RouterOutlet } from '@angular/router';
 })
 export class CartAppComponent implements OnInit {
 
-  products: Product[] = [];
   items: CartItem[] = [];
   total: number = 0;
 
-  constructor(private productService: ProductService) { }
+  constructor(private router: Router, 
+    private sharingDataService: SharingDataService) { }
 
   ngOnInit() {
-    this.products = this.productService.findAll();
     this.items = JSON.parse(sessionStorage.getItem("cart") || '[]');
     this.calculateTotal();
+    this.removeFromCart();
+    this.addToCart();
   }
 
-  addToCart(product: Product): void {
-    console.log('Product added to cart:', product);
+  addToCart(): void {
 
-    const hasItem = this.items.find(item => item.product.id === product.id);
-
-    if (hasItem) {
-      this.items = this.items.map(item => {
-        if (item.product.id === product.id) {
-          return {...item, quantity: item.quantity + 1}
-        }
-        return item;
+    this.sharingDataService.productEventEmitter.subscribe(product => {
+      console.log('Product added to cart:', product);
+  
+      const hasItem = this.items.find(item => item.product.id === product.id);
+  
+      if (hasItem) {
+        this.items = this.items.map(item => {
+          if (item.product.id === product.id) {
+            return {...item, quantity: item.quantity + 1}
+          }
+          return item;
+        });
+      } else {
+        this.items = [...this.items, { product: {...product}, quantity: 1 }];
+      }
+      this.calculateTotal();
+      this.saveSession();
+      this.router.navigate(['/cart'], {
+        state: {items: this.items, total: this.total}
       });
-    } else {
-      this.items = [...this.items, { product: {...product}, quantity: 1 }];
-    }
-    this.calculateTotal();
-    this.saveSession();
+    });
   }
 
-  removeFromCart(idProduct: number): void {
-    this.items = this.items.filter(item => item.product.id !== idProduct);
+  removeFromCart(): void {
 
-    if (this.items.length == 0) {
-      sessionStorage.removeItem('cart');
-    }
-    this.calculateTotal();
-    this.saveSession();
+    this.sharingDataService.idProductEventEmitter.subscribe(id => {
+
+      console.log('removeFromCart' + id);
+      this.items = this.items.filter(item => item.product.id !== id);
+  
+      if (this.items.length == 0) {
+        sessionStorage.removeItem('cart');
+      }
+      this.calculateTotal();
+      this.saveSession();
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate(['/cart'], {
+          state: {items: this.items, total: this.total}
+        });
+      });
+    });
   }
 
   calculateTotal() {

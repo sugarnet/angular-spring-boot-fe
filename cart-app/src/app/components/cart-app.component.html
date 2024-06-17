@@ -1,9 +1,7 @@
 <app-navbar [items]="items" [total]="total" />
 
 <div class="container my-4">
-  <h2>Product Catalog App</h2>
-  <app-catalog [products]="products" (productEventEmitter)="addToCart($event)" />
-
+   
   <router-outlet></router-outlet>
 
 </div>

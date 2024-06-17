@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { CartItem } from '../../models/cart-item';
 import { RouterModule } from '@angular/router';
+import { CartItem } from '../../models/cart-item';
 
 @Component({
   selector: 'app-navbar',

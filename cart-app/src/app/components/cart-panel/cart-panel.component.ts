@@ -1,6 +1,7 @@
 import { Component, EventEmitter, SimpleChanges } from '@angular/core';
 import { CartItem } from '../../models/cart-item';
 import { Router } from '@angular/router';
+import { SharingDataService } from '../../services/sharing-data.service';
 
 @Component({
   selector: 'app-cart-panel',
@@ -13,16 +14,14 @@ export class CartPanelComponent {
   items: CartItem[] = [];
   total: number = 0;
 
-  idProductEventEmitter: EventEmitter<number> = new EventEmitter();
-
-  constructor(private router: Router) {
+  constructor(private sharingDataService: SharingDataService, private router: Router) {
 
     this.items = this.router.getCurrentNavigation()?.extras.state!['items'];
     this.total = this.router.getCurrentNavigation()?.extras.state!['total'];
   }
 
   removeFromCart(idProduct: number) {
-    this.idProductEventEmitter.emit(idProduct);
+    this.sharingDataService.idProductEventEmitter.emit(idProduct);
   }
   
   
