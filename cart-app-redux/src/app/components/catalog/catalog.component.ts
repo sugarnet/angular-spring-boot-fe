@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Product } from '../../models/product';
-import { ProductService } from '../../services/product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { load } from '../../store/products.actions';
 import { ProductCardComponent } from '../product-card/product-card.component';
 
 @Component({
@@ -13,13 +14,13 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 export class CatalogComponent implements OnInit {
 
   @Input() products!: Product[];
-  
 
-  constructor(private productService: ProductService, 
+  constructor(private store: Store<{ products: any }>,
     private sharingDataService: SharingDataService) {
+    this.store.select('products').subscribe(state => this.products = state.products);
   }
   ngOnInit(): void {
-    this.products = this.productService.findAll();
+    this.store.dispatch(load());
   }
 
   addToCart(product: Product) {
