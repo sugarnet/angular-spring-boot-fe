@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 
 @Component({
@@ -17,8 +17,12 @@ export class UserFormComponent {
     this.user = new User();
   }
 
-  onSubmit(): void {
-    console.log(this.user);
-    this.userEventEmitter.emit(this.user);
+  onSubmit(userForm: NgForm): void {
+    if (userForm.valid) {
+      console.log(this.user);
+      this.userEventEmitter.emit(this.user);
+    }
+    userForm.reset();
+    userForm.resetForm();
   }
 }
