@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 
@@ -10,7 +10,7 @@ import { User } from '../../models/user';
 })
 export class UserFormComponent {
 
-  user: User;
+  @Input() user: User;
   @Output() userEventEmitter: EventEmitter<User> = new EventEmitter();
 
   constructor() {
@@ -22,6 +22,12 @@ export class UserFormComponent {
       console.log(this.user);
       this.userEventEmitter.emit(this.user);
     }
+    userForm.reset();
+    userForm.resetForm();
+  }
+
+  clear(userForm: NgForm): void {
+    this.user = new User();
     userForm.reset();
     userForm.resetForm();
   }
