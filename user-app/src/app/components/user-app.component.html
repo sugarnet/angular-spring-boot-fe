@@ -4,16 +4,19 @@
         {{ open ? 'Close' : 'Create User' }}
     </button>
     <div class="row">
-        @if (open) {
-            <div class="col">
-                <user-form (userEventEmitter)="addUser($event)" [user]="userSelected"></user-form>
-            </div>
-        } @else {
-            <div class="col">
-                <user-list [users]="users" 
-                    (removeUserEventEmmiter)="onRemoveUser($event)" 
-                    (selectedUserEventEmmiter)="selectedUser($event)"></user-list>
-            </div>
-        }
+
+        
+        <div class="col">
+            <user-list [users]="users" 
+            (removeUserEventEmmiter)="onRemoveUser($event)" 
+            (selectedUserEventEmmiter)="selectedUser($event)"></user-list>
+        </div>
+        
     </div>
 </div>
+
+@if (open) {
+    <div class="open-modal animation fadeIn">
+        <user-form (userEventEmitter)="addUser($event)" [user]="userSelected" (openEventEmitter)="setOpen()"></user-form>
+    </div>
+}
