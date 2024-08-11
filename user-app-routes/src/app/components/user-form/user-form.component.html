@@ -13,9 +13,13 @@
               name="name"
               [(ngModel)]="user.name"
               class="form-control my-2"
-              required
               #name="ngModel"
             />
+            <!-- required -->
+            @if(errors.name) {
+              <div class="text-danger">{{ errors.name }}</div>
+            }
+
             @if (name.invalid && (name.dirty || name.touched)) {
               @if (name.errors!['required']) {
                 <div class="text-danger">
@@ -30,9 +34,12 @@
               name="lastname"
               [(ngModel)]="user.lastname"
               class="form-control my-2"
-              required
               #lastname="ngModel"
             />
+            <!-- required -->
+            @if(errors.lastname) {
+              <div class="text-danger">{{ errors.lastname }}</div>
+            }
             @if (lastname.invalid && (lastname.dirty || lastname.touched)) {
               @if (lastname.errors!['required']) {
                 <div class="text-danger">
@@ -48,10 +55,12 @@
               name="email"
               [(ngModel)]="user.email"
               class="form-control my-2"
-              required
-              email
               #email="ngModel"
             />
+            <!-- required email -->
+            @if(errors.email) {
+              <div class="text-danger">{{ errors.email }}</div>
+            }
             @if (email.invalid && (email.dirty || email.touched)) {
               @if (email.errors!['required']) {
                 <div class="text-danger">
@@ -76,6 +85,10 @@
               minlength="8"
               #username="ngModel"
             />
+            <!-- required minlength="8" -->
+            @if(errors.username) {
+              <div class="text-danger">{{ errors.username }}</div>
+            }
             @if (username.invalid && (username.dirty || username.touched)) {
               @if (username.errors!['required']) {
                 <div class="text-danger">
@@ -100,6 +113,10 @@
               minlength="6"
               #password="ngModel"
             />
+            <!-- required minlength="6 -->
+            @if(errors.password) {
+              <div class="text-danger">{{ errors.password }}</div>
+            }
             @if (password.invalid && (password.dirty || password.touched)) {
               @if (password.errors!['required']) {
                 <div class="text-danger">
@@ -115,9 +132,10 @@
           </div>
         
           <div>
-            <button class="btn btn-primary m-2" [disabled]="userForm.invalid">
+            <button class="btn btn-primary m-2" >
               {{ user.id > 0 ? 'Update' : 'Create' }}
             </button>
+            <!--[disabled]="userForm.invalid"-->
             <button class="btn btn-secondary my-2" (click)="clear(userForm)">
               Clear
             </button>

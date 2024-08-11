@@ -39,23 +39,45 @@ export class UserAppComponent implements OnInit {
   addUser() {
     this.sharingDataService.userEventEmitter.subscribe((user) => {
       if (user.id > 0) {
-        this.userService.update(user).subscribe((userUpdated) => {
-          this.users = this.users.map((u) =>
-            u.id == userUpdated.id ? { ...userUpdated } : u
-          );
-          this.router.navigate(['/users'], { state: { users: this.users } });
+        this.userService.update(user).subscribe({
+          next: (userUpdated) => {
+            this.users = this.users.map((u) =>
+              u.id == userUpdated.id ? { ...userUpdated } : u
+            );
+            this.router.navigate(['/users'], { state: { users: this.users } });
+            Swal.fire({
+              title: 'User saved!',
+              text: 'The user was saved!',
+              icon: 'success',
+            });
+          },
+          error: (err) => {
+            // console.log(err.error);
+            if (err.status == 400) {
+              this.sharingDataService.errorsUserFormEventEmitter.emit(err.error);
+            }
+          },
         });
       } else {
-        this.userService.create(user).subscribe((userCreated) => {
-          this.users = [...this.users, { ...userCreated }];
-          this.router.navigate(['/users'], { state: { users: this.users } });
+        this.userService.create(user).subscribe({
+          next: (userCreated) => {
+            this.users = [...this.users, { ...userCreated }];
+            this.router.navigate(['/users'], { state: { users: this.users } });
+            Swal.fire({
+              title: 'User saved!',
+              text: 'The user was saved!',
+              icon: 'success',
+            });
+          },
+          error: (err) => {
+            // console.log(err.error);
+            if (err.status == 400) {
+              this.sharingDataService.errorsUserFormEventEmitter.emit(err.error);
+            }
+          },
         });
       }
-      Swal.fire({
-        title: 'User saved!',
-        text: 'The user was saved!',
-        icon: 'success',
-      });
+      
     });
   }
 
@@ -76,7 +98,9 @@ export class UserAppComponent implements OnInit {
             this.router
               .navigate(['/users/create'], { skipLocationChange: true })
               .then(() => {
-                this.router.navigate(['/users'], { state: { users: this.users } });
+                this.router.navigate(['/users'], {
+                  state: { users: this.users },
+                });
               });
           });
           Swal.fire({
