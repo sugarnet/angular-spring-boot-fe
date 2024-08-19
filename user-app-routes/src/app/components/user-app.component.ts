@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
@@ -14,18 +14,33 @@ import { SharingDataService } from '../services/sharing-data.service';
 })
 export class UserAppComponent implements OnInit {
   users: User[] = [];
+  paginator: any = {};
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private sharingDataService: SharingDataService
   ) {}
 
   ngOnInit(): void {
-    this.userService.findAll().subscribe((users) => (this.users = users));
+    // this.userService.findAll().subscribe((users) => (this.users = users));
+    // this.activatedRoute.paramMap.subscribe(params => {
+    //   const page = +(params.get('page') || '0');
+    //   console.log(page);
+    //   this.userService.findAllPageable(page).subscribe((pageable) => (this.users = pageable.content as User[]));
+    // });
     this.addUser();
     this.onRemoveUser();
     this.findUserById();
+    this.pageUsersEvent();
+  }
+
+  pageUsersEvent() {
+    this.sharingDataService.pageUsersEventEmitter.subscribe((result) => {
+      this.users = result.users;
+      this.paginator = result.paginator;
+    });
   }
 
   findUserById() {
@@ -44,7 +59,9 @@ export class UserAppComponent implements OnInit {
             this.users = this.users.map((u) =>
               u.id == userUpdated.id ? { ...userUpdated } : u
             );
-            this.router.navigate(['/users'], { state: { users: this.users } });
+            this.router.navigate(['/users'], {
+              state: { users: this.users, paginator: this.paginator },
+            });
             Swal.fire({
               title: 'User saved!',
               text: 'The user was saved!',
@@ -54,7 +71,9 @@ export class UserAppComponent implements OnInit {
           error: (err) => {
             // console.log(err.error);
             if (err.status == 400) {
-              this.sharingDataService.errorsUserFormEventEmitter.emit(err.error);
+              this.sharingDataService.errorsUserFormEventEmitter.emit(
+                err.error
+              );
             }
           },
         });
@@ -62,7 +81,7 @@ export class UserAppComponent implements OnInit {
         this.userService.create(user).subscribe({
           next: (userCreated) => {
             this.users = [...this.users, { ...userCreated }];
-            this.router.navigate(['/users'], { state: { users: this.users } });
+            this.router.navigate(['/users'], { state: { users: this.users, paginator: this.paginator } });
             Swal.fire({
               title: 'User saved!',
               text: 'The user was saved!',
@@ -72,12 +91,13 @@ export class UserAppComponent implements OnInit {
           error: (err) => {
             // console.log(err.error);
             if (err.status == 400) {
-              this.sharingDataService.errorsUserFormEventEmitter.emit(err.error);
+              this.sharingDataService.errorsUserFormEventEmitter.emit(
+                err.error
+              );
             }
           },
         });
       }
-      
     });
   }
 
@@ -99,7 +119,7 @@ export class UserAppComponent implements OnInit {
               .navigate(['/users/create'], { skipLocationChange: true })
               .then(() => {
                 this.router.navigate(['/users'], {
-                  state: { users: this.users },
+                  state: { users: this.users, paginator: this.paginator },
                 });
               });
           });
