@@ -13,7 +13,7 @@ export class AuthService {
   private _user: any = {
     user: undefined,
     isAuth: false,
-    idAdmin: false
+    isAdmin: false
   }
 
   constructor(private http: HttpClient) { }
@@ -28,6 +28,13 @@ export class AuthService {
   }
 
   get user(): any {
+
+    if (this._user.isAuth) {
+      return this._user;
+    } else if (sessionStorage.getItem('login') != null) {
+      this._user = JSON.parse(sessionStorage.getItem('login') || '{}');
+    }
+
     return this._user;
   }
 
@@ -37,6 +44,40 @@ export class AuthService {
   }
 
   get token(): string {
+
+    if (this._token != undefined) {
+      return this._token;
+    } else if (sessionStorage.getItem('token') != null) {
+      this._token = sessionStorage.getItem('token') || '';
+    }
+
     return this._token!;
+  }
+
+  getPayload(token: string) {
+    if (token != null) {
+      return JSON.parse(atob(token.split('.')[1]));
+    }
+
+    return null;
+  }
+
+  isAdmin() {
+    return this.user.isAdmin;
+  }
+
+  isAuthenticated() {
+    return this.user.isAuth;
+  }
+
+  logout() {
+    this._token = undefined;
+    this._user = {
+      user: undefined,
+      isAuth: false,
+      isAdmin: false
+    };
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('login');
   }
 }

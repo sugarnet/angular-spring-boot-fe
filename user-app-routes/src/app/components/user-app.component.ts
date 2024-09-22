@@ -46,14 +46,14 @@ export class UserAppComponent implements OnInit {
         next: response => {
           const token =  response.token;
           console.log(token);
-          const payload = JSON.parse(atob(token.split('.')[1]));
+          const payload = this.authService.getPayload(token);
           console.log(payload);
 
           const user = {username: payload.sub};
           const login = {
             user,
             isAuth: true,
-            idAdmin: payload.isAdmin
+            isAdmin: payload.isAdmin
           };
 
           this.authService.token = token;

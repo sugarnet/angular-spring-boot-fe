@@ -11,8 +11,10 @@
                 <th>Lastname</th>
                 <th>Email</th>
                 <th>Username</th>
-                <th>Remove</th>
-                <th>Edit</th>
+                @if (admin) {
+                    <th>Remove</th>
+                    <th>Edit</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -22,16 +24,18 @@
                     <td>{{ user.lastname }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.username }}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" (click)="onRemoveUser(user.id)">
-                            remove
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-info btn-sm" [routerLink]="['/users/edit', user.id]">
-                            edit
-                        </button>
-                    </td>
+                    @if (admin) {
+                        <td>
+                            <button class="btn btn-danger btn-sm" (click)="onRemoveUser(user.id)">
+                                remove
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-sm" [routerLink]="['/users/edit', user.id]">
+                                edit
+                            </button>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

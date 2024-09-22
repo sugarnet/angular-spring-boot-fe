@@ -102,35 +102,36 @@
               }
             }
           </div>
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              [(ngModel)]="user.password"
-              class="form-control my-2"
-              required
-              minlength="6"
-              #password="ngModel"
-            />
-            <!-- required minlength="6 -->
-            @if(errors.password) {
-              <div class="text-danger">{{ errors.password }}</div>
-            }
-            @if (password.invalid && (password.dirty || password.touched)) {
-              @if (password.errors!['required']) {
-                <div class="text-danger">
-                  Password is required
-                </div>
+          @if (user.id == 0) {
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                [(ngModel)]="user.password"
+                class="form-control my-2"
+                required
+                minlength="6"
+                #password="ngModel"
+              />
+              <!-- required minlength="6 -->
+              @if(errors.password) {
+                <div class="text-danger">{{ errors.password }}</div>
               }
-              @if (password.errors!['minlength']) {
-                <div class="text-danger">
-                  Password must to have at least 6 characters
-                </div>
+              @if (password.invalid && (password.dirty || password.touched)) {
+                @if (password.errors!['required']) {
+                  <div class="text-danger">
+                    Password is required
+                  </div>
+                }
+                @if (password.errors!['minlength']) {
+                  <div class="text-danger">
+                    Password must to have at least 6 characters
+                  </div>
+                }
               }
-            }
-          </div>
-        
+            </div>
+          }
           <div>
             <button class="btn btn-primary m-2" >
               {{ user.id > 0 ? 'Update' : 'Create' }}

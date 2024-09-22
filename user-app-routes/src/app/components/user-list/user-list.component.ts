@@ -4,6 +4,7 @@ import { User } from '../../models/user';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { UserService } from '../../services/user.service';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'user-list',
@@ -19,6 +20,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private sharingDataService: SharingDataService,
+    private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
@@ -57,5 +59,9 @@ export class UserListComponent implements OnInit {
 
   onRemoveUser(id: number): void {
     this.sharingDataService.removeUserEventEmmiter.emit(id);
+  }
+
+  get admin(): boolean {
+    return this.authService.isAdmin();
   }
 }
