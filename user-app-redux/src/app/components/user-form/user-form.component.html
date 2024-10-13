@@ -133,11 +133,11 @@
             </div>
           }
           <div>
-            <button class="btn btn-primary m-2" >
+            <button type="submit" class="btn btn-primary m-2" >
               {{ user.id > 0 ? 'Update' : 'Create' }}
             </button>
             <!--[disabled]="userForm.invalid"-->
-            <button class="btn btn-secondary my-2" (click)="clear(userForm)">
+            <button type="button" class="btn btn-secondary my-2" (click)="clear(userForm)">
               Clear
             </button>
           </div>

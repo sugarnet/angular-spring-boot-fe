@@ -5,6 +5,9 @@ import { SharingDataService } from '../../services/sharing-data.service';
 import { UserService } from '../../services/user.service';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { load, remove } from '../../store/users.action';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'user-list',
@@ -18,39 +21,22 @@ export class UserListComponent implements OnInit {
   paginator: any = {};
 
   constructor(
+    private store: Store<{ users: any }>,
     private userService: UserService,
     private sharingDataService: SharingDataService,
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-    if (this.router.getCurrentNavigation()?.extras.state) {
-      this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
-      this.paginator = this.router.getCurrentNavigation()?.extras.state!['paginator'];
-    }
+    this.store.select('users').subscribe((state) => {
+      this.users = state.users;
+      this.paginator = state.paginator;
+    });
   }
   ngOnInit(): void {
-    if (
-      this.users == undefined ||
-      this.users == null ||
-      this.users.length == 0
-    ) {
-      console.log('calling findAll...');
-      // this.userService.findAll().subscribe((users) => (this.users = users));
-
-      this.activatedRoute.paramMap.subscribe((params) => {
-        const page = +(params.get('page') || '0');
-        console.log(page);
-        this.userService.findAllPageable(page).subscribe((pageable) => {
-          this.users = pageable.content as User[];
-          this.paginator = pageable;
-          this.sharingDataService.pageUsersEventEmitter.emit({
-            users: this.users,
-            paginator: this.paginator,
-          });
-        });
-      });
-    }
+    this.activatedRoute.paramMap.subscribe((params) =>
+      this.store.dispatch(load({ page: +(params.get('page') || '0') }))
+    );
   }
 
   onSelectedUser(user: User): void {
@@ -58,7 +44,19 @@ export class UserListComponent implements OnInit {
   }
 
   onRemoveUser(id: number): void {
-    this.sharingDataService.removeUserEventEmmiter.emit(id);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.store.dispatch(remove({ id }));
+      }
+    });
   }
 
   get admin(): boolean {

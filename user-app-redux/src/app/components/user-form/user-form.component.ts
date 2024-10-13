@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { User } from '../../models/user';
-import { SharingDataService } from '../../services/sharing-data.service';
-import { UserService } from '../../services/user.service';
+import { add, find, resetUser, update } from '../../store/users.action';
 
 @Component({
   selector: 'user-form',
@@ -16,39 +16,37 @@ export class UserFormComponent implements OnInit {
   errors: any = {};
 
   constructor(
-    private route: ActivatedRoute,
-    private sharingDataService: SharingDataService,
-    private userService: UserService
+    private store: Store<{ users: any }>,
+    private route: ActivatedRoute
   ) {
     this.user = new User();
+
+    this.store.select('users').subscribe((state) => {
+      this.errors = state.errors;
+      this.user = { ...state.user };
+    });
   }
   ngOnInit(): void {
-    this.sharingDataService.errorsUserFormEventEmitter.subscribe(errors => this.errors = errors);
-    this.sharingDataService.selectUserEventEmitter.subscribe(
-      (user) => (this.user = user)
-    );
-
+    this.store.dispatch(resetUser());
     this.route.paramMap.subscribe((params) => {
       const id: number = +(params.get('id') || '0');
 
       if (id > 0) {
-        this.sharingDataService.findUserByIdEventEmitter.emit(id);
-        //this.userService.findById(id).subscribe(user => this.user = user);
+        this.store.dispatch(find({ id }));
       }
     });
   }
 
   onSubmit(userForm: NgForm): void {
-    //if (userForm.valid) {
-      console.log(this.user);
-      this.sharingDataService.userEventEmitter.emit(this.user);
-    //}
-    // userForm.reset();
-    // userForm.resetForm();
+    if (this.user.id > 0) {
+      this.store.dispatch(update({ userUpdated: this.user }));
+    } else {
+      this.store.dispatch(add({ userCreated: this.user }));
+    }
   }
 
   clear(userForm: NgForm): void {
-    this.user = new User();
+    this.store.dispatch(resetUser());
     userForm.reset();
     userForm.resetForm();
   }
