@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, EMPTY, exhaustMap, map, of, tap } from 'rxjs';
+import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import Swal from 'sweetalert2';
-import { User } from '../models/user';
-import { UserService } from '../services/user.service';
+
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
 import {
   add,
   addSuccess,
@@ -15,7 +16,7 @@ import {
   setErrors,
   update,
   updateSuccess,
-} from './users.action';
+} from './users.actions';
 
 @Injectable()
 export class UsersEffects {

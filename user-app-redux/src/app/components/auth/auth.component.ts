@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { User } from '../../models/user';
-import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
-import { SharingDataService } from '../../services/sharing-data.service';
+import { Store } from '@ngrx/store';
+import Swal from 'sweetalert2';
+import { User } from '../../models/user';
+import { login } from '../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -13,7 +14,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
 export class AuthComponent {
   public user: User;
 
-  constructor(private sharingDataService: SharingDataService) {
+  constructor(private store: Store<{ auth: any }>) {
     this.user = new User();
   }
 
@@ -21,10 +22,7 @@ export class AuthComponent {
     if (!this.user.username || !this.user.password) {
       Swal.fire('Login error!', "Username or Password can't be empty", 'error');
     } else {
-      this.sharingDataService.loginEventEmitter.emit({
-        username: this.user.username,
-        password: this.user.password,
-      });
+      this.store.dispatch(login({ username: this.user.username, password: this.user.password }));
     }
   }
 }
