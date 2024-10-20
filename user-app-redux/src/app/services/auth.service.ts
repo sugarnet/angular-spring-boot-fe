@@ -2,19 +2,19 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { login, logout } from '../store/auth/auth.actions';
+import { BACKEND_URL } from '../components/config/constants';
+import { logout } from '../store/auth/auth.actions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  private url: string = 'http://localhost:8080/login';
+  private url: string = `${BACKEND_URL}/login`;
 
   private _user: any;
 
   constructor(private store: Store<{ auth: any }>, private http: HttpClient) {
-    this.store.select('auth').subscribe(state => this._user = state);
+    this.store.select('auth').subscribe((state) => (this._user = state));
   }
 
   login({ username, password }: any): Observable<any> {
@@ -22,7 +22,6 @@ export class AuthService {
   }
 
   set user(user: any) {
-    
     sessionStorage.setItem('login', JSON.stringify(user));
   }
 

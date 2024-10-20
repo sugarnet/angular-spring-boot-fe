@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { User } from '../../models/user';
-import { SharingDataService } from '../../services/sharing-data.service';
-import { UserService } from '../../services/user.service';
-import { PaginatorComponent } from '../paginator/paginator.component';
-import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
-import { load, remove } from '../../store/users/users.actions';
 import Swal from 'sweetalert2';
+import { User } from '../../models/user';
+import { AuthService } from '../../services/auth.service';
+import { load, remove } from '../../store/users/users.actions';
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 @Component({
   selector: 'user-list',
@@ -19,11 +17,10 @@ export class UserListComponent implements OnInit {
   title: string = 'Users List';
   users: User[] = [];
   paginator: any = {};
+  loading: boolean = true;
 
   constructor(
     private store: Store<{ users: any }>,
-    private userService: UserService,
-    private sharingDataService: SharingDataService,
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -31,6 +28,7 @@ export class UserListComponent implements OnInit {
     this.store.select('users').subscribe((state) => {
       this.users = state.users;
       this.paginator = state.paginator;
+      this.loading = state.loading;
     });
   }
   ngOnInit(): void {
